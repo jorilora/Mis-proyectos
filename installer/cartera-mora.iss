@@ -48,22 +48,26 @@ Source: "..\backend\.env.production"; DestDir: "{app}\backend"; DestName: ".env"
 Source: "..\frontend\*"; DestDir: "{app}\frontend"; Flags: recursesubdirs; Excludes: "node_modules\*,dist\*,.env"
 Source: "..\scripts\*"; DestDir: "{app}\scripts"
 
-; --- CARPETAS NECESARIAS ---
 [Dirs]
 Name: "{app}\backend\prisma"
 Name: "{app}\logs"
 
-; --- COMANDOS QUE SE EJECUTAN DURANTE LA INSTALACION ---
 [Run]
-Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && npm install"; StatusMsg: "Instalando dependencias del servidor... (puede tardar varios minutos)"; Flags: waituntilterminated runhidden
-Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && npx prisma migrate deploy"; StatusMsg: "Creando base de datos..."; Flags: waituntilterminated runhidden
-Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && node prisma/seed.js"; StatusMsg: "Creando usuario administrador..."; Flags: waituntilterminated runhidden
-Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && npm run build"; StatusMsg: "Compilando servidor..."; Flags: waituntilterminated runhidden
-Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\frontend"" && npm install"; StatusMsg: "Instalando dependencias de la interfaz... (puede tardar varios minutos)"; Flags: waituntilterminated runhidden
-Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\frontend"" && npm run build"; StatusMsg: "Compilando interfaz de usuario..."; Flags: waituntilterminated runhidden
+; 1. Dependencias del backend
+Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && npm install >> ""{app}\logs\install.log"" 2>&1"; StatusMsg: "Instalando dependencias del servidor... (puede tardar varios minutos)"; Flags: waituntilterminated runhidden
+; 2. Crear base de datos desde el schema (no requiere archivos de migracion)
+Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && npx prisma db push --accept-data-loss >> ""{app}\logs\install.log"" 2>&1"; StatusMsg: "Creando base de datos..."; Flags: waituntilterminated runhidden
+; 3. Crear usuario administrador
+Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && node prisma/seed.js >> ""{app}\logs\install.log"" 2>&1"; StatusMsg: "Creando usuario administrador..."; Flags: waituntilterminated runhidden
+; 4. Compilar backend TypeScript
+Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\backend"" && npm run build >> ""{app}\logs\install.log"" 2>&1"; StatusMsg: "Compilando servidor..."; Flags: waituntilterminated runhidden
+; 5. Dependencias del frontend
+Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\frontend"" && npm install >> ""{app}\logs\install.log"" 2>&1"; StatusMsg: "Instalando dependencias de la interfaz... (puede tardar varios minutos)"; Flags: waituntilterminated runhidden
+; 6. Compilar frontend React
+Filename: "cmd.exe"; Parameters: "/c cd /d ""{app}\frontend"" && npm run build >> ""{app}\logs\install.log"" 2>&1"; StatusMsg: "Compilando interfaz de usuario..."; Flags: waituntilterminated runhidden
+; 7. Iniciar app al terminar
 Filename: "wscript.exe"; Parameters: """{app}\scripts\start-silent.vbs"""; Description: "Iniciar Cartera en Mora ahora"; Flags: nowait postinstall skipifsilent
 
-; --- ACCESOS DIRECTOS ---
 [Icons]
 Name: "{autodesktop}\Cartera en Mora"; Filename: "wscript.exe"; Parameters: """{app}\scripts\start-silent.vbs"""; Comment: "Abrir Cartera en Mora"
 Name: "{group}\Cartera en Mora"; Filename: "wscript.exe"; Parameters: """{app}\scripts\start-silent.vbs"""; Comment: "Abrir Cartera en Mora"
@@ -71,6 +75,5 @@ Name: "{group}\Detener Cartera en Mora"; Filename: "{app}\scripts\stop.bat"; Com
 Name: "{group}\Desinstalar Cartera en Mora"; Filename: "{uninstallexe}"
 Name: "{userstartup}\Cartera en Mora"; Filename: "wscript.exe"; Parameters: """{app}\scripts\start-silent.vbs"""; Comment: "Cartera en Mora - Inicio automatico"
 
-; --- AL DESINSTALAR: detener el servidor ---
 [UninstallRun]
 Filename: "{app}\scripts\stop.bat"; Flags: runhidden waituntilterminated
