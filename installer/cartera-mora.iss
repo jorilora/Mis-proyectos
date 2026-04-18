@@ -22,7 +22,7 @@ SetupLogging=yes
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
-; --- VERIFICACION DE NODE.JS ANTES DE INSTALAR ---
+; --- DETECCION E INSTALACION AUTOMATICA DE NODE.JS ---
 [Code]
 function NodeJSInstalled(): Boolean;
 var
@@ -30,6 +30,32 @@ var
 begin
   Result := Exec('cmd.exe', '/c node --version', '', SW_HIDE, ewWaitUntilTerminated, ResultCode)
              and (ResultCode = 0);
+  if not Result then
+    Result := FileExists('C:\Program Files\nodejs\node.exe');
+end;
+
+function InstalarNodeJS(): Boolean;
+var
+  ResultCode: Integer;
+  TempFile: String;
+begin
+  Result := False;
+  // Intentar con winget (Windows 10/11)
+  if Exec('winget.exe', 'install --id OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements --silent', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+  begin
+    Result := (ResultCode = 0);
+  end;
+  // Si winget fallo, descargar el instalador MSI con PowerShell
+  if not Result then
+  begin
+    TempFile := ExpandConstant('{tmp}\node-lts.msi');
+    Exec('powershell.exe',
+      '-ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri ''https://nodejs.org/dist/v20.18.0/node-v20.18.0-x64.msi'' -OutFile ''' + TempFile + ''' -UseBasicParsing"',
+      '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    if (ResultCode = 0) and FileExists(TempFile) then
+      Exec('msiexec.exe', '/i "' + TempFile + '" /qn', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+    Result := (ResultCode = 0);
+  end;
 end;
 
 function InitializeSetup(): Boolean;
@@ -37,8 +63,19 @@ begin
   Result := True;
   if not NodeJSInstalled() then
   begin
-    MsgBox('Node.js no esta instalado en este computador.' + #13#10 + #13#10 + 'Por favor descargalo e instalalo desde: https://nodejs.org' + #13#10 + #13#10 + 'Descarga la version LTS (recomendada) y vuelve a ejecutar este instalador.', mbError, MB_OK);
-    Result := False;
+    if MsgBox('Node.js no esta instalado. El instalador lo descargara e instalara automaticamente.' + #13#10 + #13#10 + 'Se necesita conexion a internet. Deseas continuar?', mbConfirmation, MB_YESNO) = IDYES then
+    begin
+      if InstalarNodeJS() then
+      begin
+        MsgBox('Node.js fue instalado correctamente.' + #13#10 + #13#10 + 'Cierra este instalador y vuelve a ejecutarlo para continuar con la instalacion de Cartera en Mora.', mbInformation, MB_OK);
+        Result := False;
+      end else
+      begin
+        MsgBox('No se pudo instalar Node.js automaticamente.' + #13#10 + #13#10 + 'Por favor instalalo manualmente desde: https://nodejs.org' + #13#10 + 'Descarga la version LTS y vuelve a ejecutar este instalador.', mbError, MB_OK);
+        Result := False;
+      end;
+    end else
+      Result := False;
   end;
 end;
 
