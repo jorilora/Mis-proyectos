@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Users, FileBarChart, LogOut } from 'lucide-react'
+import { LayoutDashboard, Users, FileBarChart, LogOut, KeyRound } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
+import ChangePasswordModal from '@/components/auth/ChangePasswordModal'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -12,6 +14,7 @@ const navItems = [
 export default function Sidebar() {
   const { pathname } = useLocation()
   const { logout, user } = useAuth()
+  const [showChangePassword, setShowChangePassword] = useState(false)
 
   return (
     <>
@@ -36,13 +39,22 @@ export default function Sidebar() {
             </Link>
           ))}
         </nav>
-        <button
-          onClick={logout}
-          className="flex items-center gap-3 px-7 py-4 text-blue-200 hover:text-white text-sm border-t border-blue-700"
-        >
-          <LogOut size={18} /> Salir
-        </button>
+        <div className="border-t border-blue-700">
+          <button
+            onClick={() => setShowChangePassword(true)}
+            className="flex items-center gap-3 px-7 py-3 text-blue-200 hover:text-white text-sm w-full"
+          >
+            <KeyRound size={18} /> Cambiar contraseña
+          </button>
+          <button
+            onClick={logout}
+            className="flex items-center gap-3 px-7 py-3 text-blue-200 hover:text-white text-sm w-full"
+          >
+            <LogOut size={18} /> Salir
+          </button>
+        </div>
       </aside>
+      <ChangePasswordModal isOpen={showChangePassword} onClose={() => setShowChangePassword(false)} />
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-brand border-t border-blue-700 z-50">
