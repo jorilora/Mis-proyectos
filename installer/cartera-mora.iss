@@ -42,7 +42,6 @@ begin
   end;
 end;
 
-; --- ARCHIVOS A COPIAR ---
 [Files]
 Source: "..\backend\*"; DestDir: "{app}\backend"; Flags: recursesubdirs; Excludes: "node_modules\*,dist\*,*.db,.env"
 Source: "..\backend\.env.production"; DestDir: "{app}\backend"; DestName: ".env"
