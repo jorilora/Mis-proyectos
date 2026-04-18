@@ -97,6 +97,7 @@ Source: "..\scripts\*"; DestDir: "{app}\scripts"
 [Dirs]
 Name: "{app}\backend\prisma"
 Name: "{app}\logs"
+Name: "{commonappdata}\CarteraMora"; Permissions: everyone-full
 
 ; --- INSTALACION: solo dependencias + base de datos (sin compilar) ---
 [Run]
@@ -120,3 +121,6 @@ Name: "{userstartup}\Cartera en Mora"; Filename: "wscript.exe"; Parameters: """{
 
 [UninstallRun]
 Filename: "{app}\scripts\stop.bat"; Flags: runhidden waituntilterminated
+
+[UninstallDelete]
+Type: filesandordirs; Name: "{commonappdata}\CarteraMora"
