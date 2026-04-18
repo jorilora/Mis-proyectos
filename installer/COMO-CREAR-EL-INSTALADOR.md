@@ -1,64 +1,76 @@
 # Cómo crear el instalador .exe
 
+## Cómo funciona en producción
+
+A diferencia del desarrollo (que necesita 2 terminales), el instalador
+genera **un solo proceso** en el PC del usuario:
+
+```
+Usuario abre el acceso directo
+        ↓
+Backend corre en http://localhost:3000
+        ↓
+Sirve la API  +  sirve la pantalla (ya compilada)
+        ↓
+Se abre el navegador en http://localhost:3000
+```
+
+No se necesita Vite ni el puerto 5173. Todo corre desde un solo servidor.
+
+---
+
 ## Lo que necesitas (una sola vez)
 
-1. **Inno Setup 6** — el programa que convierte el script en un .exe
-   - Descarga gratis en: **jrsoftware.org/isdl.php**
-   - Instálalo con las opciones por defecto
-
-2. **Node.js** instalado en tu PC (ya lo tienes)
+1. **Node.js** instalado (ya lo tienes)
+2. **Inno Setup 6** — descarga gratis en: **jrsoftware.org/isdl.php**
 
 ---
 
 ## Pasos para generar el instalador
 
-### 1. Abre Inno Setup
-Búscalo en el menú inicio como **"Inno Setup Compiler"**
+### Paso 1 — Ejecutar build.bat
 
-### 2. Abre el script
-- Menú: `File → Open`
-- Navega hasta la carpeta del proyecto
-- Abre el archivo: `installer/cartera-mora.iss`
+Abre el Explorador de archivos, entra a la carpeta `installer/` del proyecto
+y haz doble clic en **`build.bat`**.
 
-### 3. Compila
-- Presiona la tecla **F9** (o menú `Build → Compile`)
-- Verás una barra de progreso mientras compila
-- Tarda entre 30 segundos y 2 minutos
+Esto hace automáticamente:
+- Compila el backend (TypeScript → JavaScript)
+- Compila el frontend (React → HTML/CSS/JS estático)
+- Abre Inno Setup para generar el `.exe`
 
-### 4. Listo
-Cuando termine aparece el mensaje **"Compile Succeeded"**.
+Tarda entre 2 y 5 minutos. Verás el progreso en la ventana.
 
-El instalador queda en la misma carpeta `installer/` con el nombre:
-```
-Cartera-en-Mora-Setup.exe
-```
+### Paso 2 — Compilar en Inno Setup
+
+Cuando Inno Setup se abra, presiona **F9**.
+
+El instalador queda en `installer/Cartera-en-Mora-Setup.exe`.
 
 ---
 
-## Qué hace el instalador al ejecutarse en otro PC
+## Qué hace el instalador en el PC destino
 
-1. Verifica que Node.js esté instalado (si no, muestra el link de descarga)
-2. Copia todos los archivos a `C:\Program Files\Cartera en Mora\`
-3. Instala las dependencias automáticamente
-4. Crea la base de datos con el usuario `admin / admin123`
-5. Compila el código para que arranque más rápido
-6. Crea un **acceso directo en el Escritorio**
-7. Configura **inicio automático con Windows**
-8. Abre la app en el navegador
+1. Verifica que Node.js esté instalado (si no, muestra el link)
+2. Copia todos los archivos ya compilados a `C:\Program Files\Cartera en Mora\`
+3. Instala las dependencias de Node.js
+4. Crea la base de datos automáticamente
+5. Crea el usuario `admin / admin123`
+6. Crea el **acceso directo en el Escritorio**
+7. Configura el **inicio automático con Windows**
+8. Abre la app en el navegador al terminar
 
 ---
 
 ## Requisito en el PC donde se instale
 
-Solo necesita tener **Node.js** instalado previamente.
+Solo necesita **Node.js** instalado.
 - Descarga: **nodejs.org** → versión LTS
-- Si no está instalado, el instalador lo indicará con un mensaje claro
 
 ---
 
 ## Notas
 
-- El instalador pesa aproximadamente 2-5 MB (sin incluir Node.js)
-- La instalación completa tarda 5-10 minutos por los `npm install`
-- Los datos quedan en `C:\Program Files\Cartera en Mora\backend\prisma\dev.db`
+- Los datos se guardan en `C:\Program Files\Cartera en Mora\backend\prisma\dev.db`
 - Para hacer backup, copia ese archivo `dev.db`
+- Si algo falla durante la instalación, revisa `C:\Program Files\Cartera en Mora\logs\install.log`
+- La app siempre corre en **http://localhost:3000** (no en 5173)
