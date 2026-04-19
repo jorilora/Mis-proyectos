@@ -5,9 +5,9 @@ export async function listClients(search = '', page = 1, limit = 20) {
   const where = search
     ? {
         OR: [
-          { name: { contains: search, mode: 'insensitive' as const } },
-          { cedula: { contains: search, mode: 'insensitive' as const } },
-          { phone: { contains: search, mode: 'insensitive' as const } },
+          { name: { contains: search } },
+          { cedula: { contains: search } },
+          { phone: { contains: search } },
         ],
       }
     : {}
