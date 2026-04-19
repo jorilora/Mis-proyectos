@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Users, FileBarChart, LogOut, KeyRound, UserPen } from 'lucide-react'
+import { LayoutDashboard, Users, FileBarChart, LogOut, KeyRound, UserCog } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import ChangePasswordModal from '@/components/auth/ChangePasswordModal'
@@ -46,7 +46,7 @@ export default function Sidebar() {
             onClick={() => setShowChangeUsername(true)}
             className="flex items-center gap-3 px-7 py-3 text-blue-200 hover:text-white text-sm w-full"
           >
-            <UserPen size={18} /> Cambiar usuario
+            <UserCog size={18} /> Cambiar usuario
           </button>
           <button
             onClick={() => setShowChangePassword(true)}
