@@ -13,6 +13,25 @@ export async function login(username: string, password: string) {
   return { token, user: { id: user.id, username: user.username } }
 }
 
+export async function changeUsername(userId: string, newUsername: string, password: string) {
+  const user = await prisma.user.findUnique({ where: { id: userId } })
+  if (!user) throw new Error('Usuario no encontrado')
+
+  const valid = await bcrypt.compare(password, user.password)
+  if (!valid) throw new Error('La contraseña es incorrecta')
+
+  if (newUsername.trim().length < 3) throw new Error('El usuario debe tener al menos 3 caracteres')
+
+  const exists = await prisma.user.findUnique({ where: { username: newUsername.trim() } })
+  if (exists && exists.id !== userId) throw new Error('Ese nombre de usuario ya está en uso')
+
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: { username: newUsername.trim() },
+  })
+  return { id: updated.id, username: updated.username }
+}
+
 export async function changePassword(userId: string, currentPassword: string, newPassword: string) {
   const user = await prisma.user.findUnique({ where: { id: userId } })
   if (!user) throw new Error('Usuario no encontrado')

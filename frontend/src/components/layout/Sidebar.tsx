@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Users, FileBarChart, LogOut, KeyRound } from 'lucide-react'
+import { LayoutDashboard, Users, FileBarChart, LogOut, KeyRound, UserPen } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import ChangePasswordModal from '@/components/auth/ChangePasswordModal'
+import ChangeUsernameModal from '@/components/auth/ChangeUsernameModal'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -15,13 +16,14 @@ export default function Sidebar() {
   const { pathname } = useLocation()
   const { logout, user } = useAuth()
   const [showChangePassword, setShowChangePassword] = useState(false)
+  const [showChangeUsername, setShowChangeUsername] = useState(false)
 
   return (
     <>
       {/* Desktop sidebar */}
       <aside className="hidden md:flex flex-col w-60 bg-brand text-white min-h-screen">
         <div className="p-6 border-b border-blue-700">
-          <h1 className="text-xl font-bold">Cartera en Mora</h1>
+          <h1 className="text-xl font-bold">Gestión de Cartera</h1>
           <p className="text-xs text-blue-300 mt-1">{user?.username}</p>
         </div>
         <nav className="flex-1 p-4 space-y-1">
@@ -41,6 +43,12 @@ export default function Sidebar() {
         </nav>
         <div className="border-t border-blue-700">
           <button
+            onClick={() => setShowChangeUsername(true)}
+            className="flex items-center gap-3 px-7 py-3 text-blue-200 hover:text-white text-sm w-full"
+          >
+            <UserPen size={18} /> Cambiar usuario
+          </button>
+          <button
             onClick={() => setShowChangePassword(true)}
             className="flex items-center gap-3 px-7 py-3 text-blue-200 hover:text-white text-sm w-full"
           >
@@ -55,6 +63,7 @@ export default function Sidebar() {
         </div>
       </aside>
       <ChangePasswordModal isOpen={showChangePassword} onClose={() => setShowChangePassword(false)} />
+      <ChangeUsernameModal isOpen={showChangeUsername} onClose={() => setShowChangeUsername(false)} />
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-brand border-t border-blue-700 z-50">

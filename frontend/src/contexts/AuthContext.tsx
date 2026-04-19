@@ -7,6 +7,7 @@ interface AuthContextType {
   user: User | null
   login: (username: string, password: string) => Promise<void>
   logout: () => void
+  updateUser: (updates: Partial<User>) => void
   isAuthenticated: boolean
 }
 
@@ -35,8 +36,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
+  function updateUser(updates: Partial<User>) {
+    setUser((prev) => {
+      if (!prev) return prev
+      const updated = { ...prev, ...updates }
+      localStorage.setItem('user', JSON.stringify(updated))
+      return updated
+    })
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   )

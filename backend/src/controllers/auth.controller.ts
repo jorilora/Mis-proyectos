@@ -20,6 +20,25 @@ export async function loginHandler(req: Request, res: Response, next: NextFuncti
   }
 }
 
+export async function changeUsernameHandler(req: AuthRequest, res: Response, next: NextFunction) {
+  try {
+    const { newUsername, password } = req.body
+    if (!newUsername || !password) {
+      res.status(400).json({ message: 'Todos los campos son requeridos' })
+      return
+    }
+    const updated = await authService.changeUsername(req.userId!, newUsername, password)
+    res.json({ message: 'Usuario actualizado correctamente', user: updated })
+  } catch (err: any) {
+    const known = ['La contraseña es incorrecta', 'El usuario debe tener', 'ya está en uso']
+    if (known.some((m) => err.message.includes(m))) {
+      res.status(400).json({ message: err.message })
+    } else {
+      next(err)
+    }
+  }
+}
+
 export async function changePasswordHandler(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const { currentPassword, newPassword } = req.body
