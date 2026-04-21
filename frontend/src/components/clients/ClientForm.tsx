@@ -50,7 +50,7 @@ export default function ClientForm({ isOpen, onClose, client }: Props) {
     { label: 'Nombre completo', key: 'name', required: true },
     { label: 'Teléfono', key: 'phone', type: 'tel' },
     { label: 'Dirección', key: 'address' },
-    { label: 'Número de Factura', key: 'email' },
+    { label: 'Email', key: 'email', type: 'email' },
     { label: 'Notas', key: 'notes' },
   ]
 

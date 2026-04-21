@@ -59,7 +59,7 @@ export default function ClientDetailPage() {
       <div className="bg-white rounded-xl p-5 shadow-sm border grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
         <div><p className="text-gray-400 text-xs">Cédula</p><p className="font-medium">{client.cedula}</p></div>
         <div><p className="text-gray-400 text-xs">Teléfono</p><p className="font-medium">{client.phone || '—'}</p></div>
-        <div><p className="text-gray-400 text-xs">N° Factura</p><p className="font-medium">{client.email || '—'}</p></div>
+        <div><p className="text-gray-400 text-xs">Email</p><p className="font-medium">{client.email || '—'}</p></div>
         <div><p className="text-gray-400 text-xs">Dirección</p><p className="font-medium">{client.address || '—'}</p></div>
         <div className="col-span-2">
           <p className="text-gray-400 text-xs">Total en Mora</p>

@@ -75,7 +75,7 @@ export default function ReportsPage() {
               <thead className="bg-gray-50 text-gray-500">
                 <tr>
                   <th className="text-left px-4 py-3">Cliente</th>
-                  <th className="text-left px-4 py-3 hidden md:table-cell">Descripción</th>
+                  <th className="text-left px-4 py-3 hidden md:table-cell">Número de Celular</th>
                   <th className="text-right px-4 py-3">Original</th>
                   <th className="text-right px-4 py-3">Pagado</th>
                   <th className="text-right px-4 py-3">Pendiente</th>
@@ -94,7 +94,7 @@ export default function ReportsPage() {
                       <div className="text-xs text-gray-400">{row.client?.cedula}</div>
                       <div className="text-xs text-gray-400">{row.client?.phone || '—'}</div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{row.description || '—'}</td>
+                    <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{row.client?.phone || '—'}</td>
                     <td className="px-4 py-3 text-right">{formatCurrency(row.originalAmount)}</td>
                     <td className="px-4 py-3 text-right text-green-600">{formatCurrency(row.paidAmount)}</td>
                     <td className="px-4 py-3 text-right font-medium text-red-600">{formatCurrency(row.outstandingBalance)}</td>
