@@ -9,9 +9,9 @@ import { DollarSign, TrendingUp, AlertCircle, Users } from 'lucide-react'
 
 const BUCKET_COLORS: Record<string, string> = {
   'al-dia': '#22c55e',
-  '0-30': '#eab308',
-  '31-60': '#f97316',
-  '60+': '#ef4444',
+  '1-15': '#eab308',
+  '16-30': '#f97316',
+  '30+': '#ef4444',
 }
 
 export default function DashboardPage() {
@@ -32,12 +32,14 @@ export default function DashboardPage() {
   }
 
   const stats = data!
-  const chartData = stats.overdueByBucket.map((b) => ({
-    name: getBucketLabel(b.bucket),
-    monto: b.amount,
-    clientes: b.count,
-    color: BUCKET_COLORS[b.bucket],
-  }))
+  const chartData = stats.overdueByBucket
+    .filter((b) => b.bucket !== 'al-dia')
+    .map((b) => ({
+      name: getBucketLabel(b.bucket),
+      monto: b.amount,
+      clientes: b.count,
+      color: BUCKET_COLORS[b.bucket],
+    }))
 
   return (
     <div className="space-y-6">

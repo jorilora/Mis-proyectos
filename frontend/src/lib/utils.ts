@@ -16,9 +16,9 @@ export function formatDate(date: string | Date): string {
 export function getBucketLabel(bucket: string): string {
   const labels: Record<string, string> = {
     'al-dia': 'Al día',
-    '0-30': '1-30 días',
-    '31-60': '31-60 días',
-    '60+': 'Más de 60 días',
+    '1-15': '1-15 días',
+    '16-30': '16-30 días',
+    '30+': 'Más de 30 días',
   }
   return labels[bucket] ?? bucket
 }

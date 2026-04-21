@@ -59,9 +59,9 @@ export async function getDashboardStats() {
 
   const buckets: Record<string, { count: number; amount: number }> = {
     'al-dia': { count: 0, amount: 0 },
-    '0-30': { count: 0, amount: 0 },
-    '31-60': { count: 0, amount: 0 },
-    '60+': { count: 0, amount: 0 },
+    '1-15': { count: 0, amount: 0 },
+    '16-30': { count: 0, amount: 0 },
+    '30+': { count: 0, amount: 0 },
   }
 
   for (const d of enriched) {

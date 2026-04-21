@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { debtsApi } from '@/api/debts'
 import Modal from '@/components/ui/Modal'
@@ -7,25 +7,45 @@ interface Props {
   isOpen: boolean
   onClose: () => void
   clientId: string
+  debt?: { id: string; amount: number; dueDate: string; description?: string | null }
 }
 
-export default function DebtForm({ isOpen, onClose, clientId }: Props) {
+export default function DebtForm({ isOpen, onClose, clientId, debt }: Props) {
   const qc = useQueryClient()
+  const isEdit = !!debt
   const [form, setForm] = useState({ amount: '', dueDate: '', description: '' })
   const [error, setError] = useState('')
 
+  useEffect(() => {
+    if (debt) {
+      setForm({
+        amount: String(debt.amount),
+        dueDate: debt.dueDate ? debt.dueDate.slice(0, 10) : '',
+        description: debt.description ?? '',
+      })
+    } else {
+      setForm({ amount: '', dueDate: '', description: '' })
+    }
+    setError('')
+  }, [debt, isOpen])
+
   const mutation = useMutation({
     mutationFn: () =>
-      debtsApi.create({
-        clientId,
-        amount: Number(form.amount),
-        dueDate: form.dueDate,
-        description: form.description,
-      }),
+      isEdit
+        ? debtsApi.update(debt!.id, {
+            amount: Number(form.amount),
+            dueDate: form.dueDate,
+            description: form.description,
+          })
+        : debtsApi.create({
+            clientId,
+            amount: Number(form.amount),
+            dueDate: form.dueDate,
+            description: form.description,
+          }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['client', clientId] })
       qc.invalidateQueries({ queryKey: ['dashboard'] })
-      setForm({ amount: '', dueDate: '', description: '' })
       onClose()
     },
     onError: (err: any) => setError(err.response?.data?.message || 'Error al guardar'),
@@ -37,7 +57,7 @@ export default function DebtForm({ isOpen, onClose, clientId }: Props) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Registrar Deuda">
+    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? 'Editar Deuda' : 'Registrar Deuda'}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Monto *</label>
@@ -82,7 +102,7 @@ export default function DebtForm({ isOpen, onClose, clientId }: Props) {
             disabled={mutation.isPending}
             className="flex-1 bg-brand text-white rounded-lg py-2 text-sm font-medium hover:bg-brand-dark disabled:opacity-50"
           >
-            {mutation.isPending ? 'Guardando...' : 'Registrar'}
+            {mutation.isPending ? 'Guardando...' : isEdit ? 'Guardar cambios' : 'Registrar'}
           </button>
         </div>
       </form>

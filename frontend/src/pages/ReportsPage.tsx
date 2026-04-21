@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { dashboardApi } from '@/api/debts'
 import { UrgencyBadge } from '@/components/ui/Badge'
@@ -6,9 +7,9 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 import { Download } from 'lucide-react'
 import api from '@/api/client'
 
-const buckets = ['', '0-30', '31-60', '60+']
+const buckets = ['', '1-15', '16-30', '30+']
 const bucketLabels: Record<string, string> = {
-  '': 'Todos', '0-30': '1-30 días', '31-60': '31-60 días', '60+': '+60 días',
+  '': 'Todos', '1-15': '1-15 días', '16-30': '16-30 días', '30+': '+30 días',
 }
 
 export default function ReportsPage() {
@@ -87,8 +88,11 @@ export default function ReportsPage() {
                 {rows.map((row: any) => (
                   <tr key={row.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3">
-                      <div className="font-medium">{row.client?.name}</div>
+                      <Link to={`/clients/${row.client?.id}`} className="font-medium text-brand hover:underline">
+                        {row.client?.name}
+                      </Link>
                       <div className="text-xs text-gray-400">{row.client?.cedula}</div>
+                      <div className="text-xs text-gray-400">{row.client?.phone || '—'}</div>
                     </td>
                     <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{row.description || '—'}</td>
                     <td className="px-4 py-3 text-right">{formatCurrency(row.originalAmount)}</td>

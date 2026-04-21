@@ -14,6 +14,7 @@ export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>()
   const qc = useQueryClient()
   const [showDebtForm, setShowDebtForm] = useState(false)
+  const [editDebt, setEditDebt] = useState<any>(null)
   const [showEditClient, setShowEditClient] = useState(false)
   const [paymentDebt, setPaymentDebt] = useState<any>(null)
 
@@ -58,7 +59,7 @@ export default function ClientDetailPage() {
       <div className="bg-white rounded-xl p-5 shadow-sm border grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
         <div><p className="text-gray-400 text-xs">Cédula</p><p className="font-medium">{client.cedula}</p></div>
         <div><p className="text-gray-400 text-xs">Teléfono</p><p className="font-medium">{client.phone || '—'}</p></div>
-        <div><p className="text-gray-400 text-xs">Email</p><p className="font-medium">{client.email || '—'}</p></div>
+        <div><p className="text-gray-400 text-xs">N° Factura</p><p className="font-medium">{client.email || '—'}</p></div>
         <div><p className="text-gray-400 text-xs">Dirección</p><p className="font-medium">{client.address || '—'}</p></div>
         <div className="col-span-2">
           <p className="text-gray-400 text-xs">Total en Mora</p>
@@ -80,12 +81,14 @@ export default function ClientDetailPage() {
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="font-semibold text-gray-700">Deudas</h2>
-          <button
-            onClick={() => setShowDebtForm(true)}
-            className="flex items-center gap-2 bg-brand text-white rounded-lg px-3 py-1.5 text-sm hover:bg-brand-dark"
-          >
-            <Plus size={14} /> Nueva Deuda
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowDebtForm(true)}
+              className="flex items-center gap-2 bg-brand text-white rounded-lg px-3 py-1.5 text-sm hover:bg-brand-dark"
+            >
+              <Plus size={14} /> Nueva Deuda
+            </button>
+          </div>
         </div>
 
         {client.debts.length === 0 ? (
@@ -143,7 +146,7 @@ export default function ClientDetailPage() {
                   </div>
                 )}
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {debt.outstandingBalance > 0 && (
                     <button
                       onClick={() => setPaymentDebt(debt)}
@@ -152,6 +155,12 @@ export default function ClientDetailPage() {
                       <CreditCard size={12} /> Registrar Abono
                     </button>
                   )}
+                  <button
+                    onClick={() => setEditDebt(debt)}
+                    className="flex items-center gap-1.5 text-xs text-blue-600 border border-blue-200 rounded-lg px-3 py-1.5 hover:bg-blue-50"
+                  >
+                    <Pencil size={12} /> Editar Deuda
+                  </button>
                   <button
                     onClick={() => confirm('¿Eliminar esta deuda y sus abonos?') && deleteDebt.mutate(debt.id)}
                     className="flex items-center gap-1.5 text-xs text-gray-400 border rounded-lg px-3 py-1.5 hover:text-red-500 hover:border-red-200"
@@ -166,6 +175,7 @@ export default function ClientDetailPage() {
       </div>
 
       <DebtForm isOpen={showDebtForm} onClose={() => setShowDebtForm(false)} clientId={id!} />
+      <DebtForm isOpen={!!editDebt} onClose={() => setEditDebt(null)} clientId={id!} debt={editDebt} />
       {paymentDebt && (
         <PaymentForm
           isOpen={!!paymentDebt}

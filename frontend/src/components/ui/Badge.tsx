@@ -1,19 +1,19 @@
 import { cn } from '@/lib/utils'
 
-type Bucket = 'al-dia' | '0-30' | '31-60' | '60+'
+type Bucket = 'al-dia' | '1-15' | '16-30' | '30+'
 
 const styles: Record<Bucket, string> = {
   'al-dia': 'bg-green-100 text-green-800',
-  '0-30': 'bg-yellow-100 text-yellow-800',
-  '31-60': 'bg-orange-100 text-orange-800',
-  '60+': 'bg-red-100 text-red-800',
+  '1-15': 'bg-yellow-100 text-yellow-800',
+  '16-30': 'bg-orange-100 text-orange-800',
+  '30+': 'bg-red-100 text-red-800',
 }
 
 const labels: Record<Bucket, string> = {
   'al-dia': 'Al día',
-  '0-30': '1-30 días',
-  '31-60': '31-60 días',
-  '60+': '+60 días',
+  '1-15': '1-15 días',
+  '16-30': '16-30 días',
+  '30+': '+30 días',
 }
 
 export function UrgencyBadge({ bucket }: { bucket: string }) {

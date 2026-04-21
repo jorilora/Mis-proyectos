@@ -92,6 +92,6 @@ export function enrichDebt(debt: any) {
   const due = new Date(debt.dueDate)
   const daysOverdue = outstandingBalance > 0 ? Math.max(0, Math.floor((today.getTime() - due.getTime()) / 86400000)) : 0
   const bucket =
-    daysOverdue === 0 ? 'al-dia' : daysOverdue <= 30 ? '0-30' : daysOverdue <= 60 ? '31-60' : '60+'
+    daysOverdue === 0 ? 'al-dia' : daysOverdue <= 15 ? '1-15' : daysOverdue <= 30 ? '16-30' : '30+'
   return { ...debt, originalAmount, paidAmount, outstandingBalance, daysOverdue, bucket }
 }
