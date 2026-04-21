@@ -17,7 +17,7 @@ const labels: Record<Bucket, string> = {
 }
 
 export function UrgencyBadge({ bucket }: { bucket: string }) {
-  const b = (bucket as Bucket) in styles ? (bucket as Bucket) : '60+'
+  const b = (bucket as Bucket) in styles ? (bucket as Bucket) : '30+'
   return (
     <span className={cn('inline-flex items-center px-2 py-0.5 rounded text-xs font-medium', styles[b])}>
       {labels[b]}
