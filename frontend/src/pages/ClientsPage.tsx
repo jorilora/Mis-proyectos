@@ -70,12 +70,13 @@ export default function ClientsPage() {
               </thead>
               <tbody className="divide-y">
                 {data?.data.map((client) => {
+                  const order = ['al-dia', '1-15', '16-30', '30+']
                   const worstBucket = client.debts.length
-                    ? client.debts.reduce((w, d) => {
-                        const order = ['al-dia', '0-30', '31-60', '60+']
-                        return order.indexOf(d.bucket) > order.indexOf(w) ? d.bucket : w
-                      }, 'al-dia')
+                    ? client.debts.reduce((w, d) =>
+                        order.indexOf(d.bucket) > order.indexOf(w) ? d.bucket : w
+                      , 'al-dia')
                     : 'al-dia'
+                  const maxDays = client.debts.reduce((m, d) => Math.max(m, d.daysOverdue ?? 0), 0)
                   return (
                     <tr key={client.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3">
@@ -89,7 +90,14 @@ export default function ClientsPage() {
                         {formatCurrency(client.outstandingBalance)}
                       </td>
                       <td className="px-4 py-3 text-center hidden md:table-cell">
-                        {client.outstandingBalance > 0 && <UrgencyBadge bucket={worstBucket} />}
+                        {client.outstandingBalance > 0 && (
+                          <div className="flex flex-col items-center gap-0.5">
+                            <UrgencyBadge bucket={worstBucket} />
+                            {maxDays > 0 && (
+                              <span className="text-xs text-gray-400">{maxDays} días</span>
+                            )}
+                          </div>
+                        )}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1 justify-end">

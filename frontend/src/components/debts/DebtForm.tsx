@@ -76,7 +76,7 @@ export default function DebtForm({ isOpen, onClose, clientId, debt }: Props) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de vencimiento *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Fecha *</label>
           <input
             type="date"
             value={form.dueDate}

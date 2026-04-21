@@ -103,7 +103,7 @@ export default function ClientDetailPage() {
                     {debt.invoiceNumber && (
                       <p className="text-xs text-gray-500">Factura: {debt.invoiceNumber}</p>
                     )}
-                    <p className="text-xs text-gray-400">Venció: {formatDate(debt.dueDate)}</p>
+                    <p className="text-xs text-gray-400">Fecha: {formatDate(debt.dueDate)}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <UrgencyBadge bucket={debt.bucket} />
