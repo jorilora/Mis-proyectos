@@ -15,6 +15,7 @@ export async function createDebt(data: {
   amount: number
   dueDate: string
   description?: string
+  invoiceNumber?: string
 }) {
   const debt = await prisma.debt.create({
     data: {
@@ -22,6 +23,7 @@ export async function createDebt(data: {
       amount: data.amount,
       dueDate: new Date(data.dueDate),
       description: data.description,
+      invoiceNumber: data.invoiceNumber,
     },
     include: { payments: true },
   })
@@ -30,7 +32,7 @@ export async function createDebt(data: {
 
 export async function updateDebt(
   id: string,
-  data: Partial<{ amount: number; dueDate: string; description: string }>
+  data: Partial<{ amount: number; dueDate: string; description: string; invoiceNumber: string }>
 ) {
   const debt = await prisma.debt.update({
     where: { id },
@@ -38,6 +40,7 @@ export async function updateDebt(
       ...(data.amount !== undefined && { amount: data.amount }),
       ...(data.dueDate && { dueDate: new Date(data.dueDate) }),
       ...(data.description !== undefined && { description: data.description }),
+      ...(data.invoiceNumber !== undefined && { invoiceNumber: data.invoiceNumber }),
     },
     include: { payments: true },
   })

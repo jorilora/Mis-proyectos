@@ -12,12 +12,12 @@ export async function getClientDebts(req: AuthRequest, res: Response, next: Next
 
 export async function createDebt(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    const { clientId, amount, dueDate, description } = req.body
+    const { clientId, amount, dueDate, description, invoiceNumber } = req.body
     if (!clientId || !amount || !dueDate) {
       res.status(400).json({ message: 'clientId, amount y dueDate son requeridos' })
       return
     }
-    res.status(201).json(await debtsService.createDebt({ clientId, amount, dueDate, description }))
+    res.status(201).json(await debtsService.createDebt({ clientId, amount, dueDate, description, invoiceNumber }))
   } catch (err) { next(err) }
 }
 

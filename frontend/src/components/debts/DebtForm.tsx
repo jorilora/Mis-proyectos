@@ -7,13 +7,13 @@ interface Props {
   isOpen: boolean
   onClose: () => void
   clientId: string
-  debt?: { id: string; amount: number; dueDate: string; description?: string | null }
+  debt?: { id: string; amount: number; dueDate: string; description?: string | null; invoiceNumber?: string | null }
 }
 
 export default function DebtForm({ isOpen, onClose, clientId, debt }: Props) {
   const qc = useQueryClient()
   const isEdit = !!debt
-  const [form, setForm] = useState({ amount: '', dueDate: '', description: '' })
+  const [form, setForm] = useState({ amount: '', dueDate: '', description: '', invoiceNumber: '' })
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -22,9 +22,10 @@ export default function DebtForm({ isOpen, onClose, clientId, debt }: Props) {
         amount: String(debt.amount),
         dueDate: debt.dueDate ? debt.dueDate.slice(0, 10) : '',
         description: debt.description ?? '',
+        invoiceNumber: debt.invoiceNumber ?? '',
       })
     } else {
-      setForm({ amount: '', dueDate: '', description: '' })
+      setForm({ amount: '', dueDate: '', description: '', invoiceNumber: '' })
     }
     setError('')
   }, [debt, isOpen])
@@ -36,12 +37,14 @@ export default function DebtForm({ isOpen, onClose, clientId, debt }: Props) {
             amount: Number(form.amount),
             dueDate: form.dueDate,
             description: form.description,
+            invoiceNumber: form.invoiceNumber,
           })
         : debtsApi.create({
             clientId,
             amount: Number(form.amount),
             dueDate: form.dueDate,
             description: form.description,
+            invoiceNumber: form.invoiceNumber,
           }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['client', clientId] })
@@ -80,6 +83,16 @@ export default function DebtForm({ isOpen, onClose, clientId, debt }: Props) {
             onChange={(e) => setForm((f) => ({ ...f, dueDate: e.target.value }))}
             required
             className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Número de Factura</label>
+          <input
+            type="text"
+            value={form.invoiceNumber}
+            onChange={(e) => setForm((f) => ({ ...f, invoiceNumber: e.target.value }))}
+            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+            placeholder="Ej: FAC-001"
           />
         </div>
         <div>

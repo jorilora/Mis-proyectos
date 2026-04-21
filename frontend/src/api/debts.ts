@@ -2,10 +2,10 @@ import api from './client'
 import type { Debt, Payment } from './clients'
 
 export const debtsApi = {
-  create: (data: { clientId: string; amount: number; dueDate: string; description?: string }) =>
+  create: (data: { clientId: string; amount: number; dueDate: string; description?: string; invoiceNumber?: string }) =>
     api.post<Debt>('/debts', data).then((r) => r.data),
 
-  update: (id: string, data: Partial<{ amount: number; dueDate: string; description: string }>) =>
+  update: (id: string, data: Partial<{ amount: number; dueDate: string; description: string; invoiceNumber: string }>) =>
     api.put<Debt>(`/debts/${id}`, data).then((r) => r.data),
 
   delete: (id: string) => api.delete(`/debts/${id}`),

@@ -100,6 +100,9 @@ export default function ClientDetailPage() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <p className="font-medium">{debt.description || 'Sin descripción'}</p>
+                    {debt.invoiceNumber && (
+                      <p className="text-xs text-gray-500">Factura: {debt.invoiceNumber}</p>
+                    )}
                     <p className="text-xs text-gray-400">Venció: {formatDate(debt.dueDate)}</p>
                   </div>
                   <div className="flex items-center gap-2">
