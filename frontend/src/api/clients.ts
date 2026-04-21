@@ -26,6 +26,7 @@ export interface Debt {
   bucket: string
   dueDate: string
   description?: string
+  invoiceNumber?: string
   payments: Payment[]
 }
 
