@@ -340,6 +340,85 @@
 
     /* RESPONSIVE hints */
     .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #f1f5f9; color: #475569; margin-right: 4px; }
+
+    /* USERS & ROLES */
+    .perm-matrix { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .perm-matrix th { padding: 10px 14px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; border-bottom: 2px solid var(--border); }
+    .perm-matrix th.module-col { text-align: left; }
+    .perm-matrix td { padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+    .perm-matrix td.module-name { text-align: left; font-weight: 500; color: var(--text); }
+    .perm-matrix tr:last-child td { border-bottom: none; }
+    .perm-matrix tr:hover td { background: #f8fafc; }
+    .perm-check { font-size: 16px; }
+    .role-header { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .role-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .role-dot.admin { background: var(--purple); }
+    .role-dot.cajero { background: var(--blue); }
+    .role-dot.bodeguero { background: var(--orange); }
+    .role-dot.farmaceutico { background: var(--green); }
+    .role-dot.contador { background: var(--yellow); }
+
+    /* TOGGLE SWITCH */
+    .toggle { position: relative; display: inline-block; width: 36px; height: 20px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background: #cbd5e1; border-radius: 20px; transition: 0.2s;
+    }
+    .toggle-slider:before {
+      content: ''; position: absolute; height: 14px; width: 14px;
+      left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(16px); }
+
+    /* LOGIN SCREEN */
+    .login-overlay {
+      position: fixed; inset: 0; background: #0f172a;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200; flex-direction: column; gap: 0;
+    }
+    .login-overlay.hidden { display: none; }
+    .login-box {
+      background: #1e293b; border-radius: 16px; padding: 40px;
+      width: 420px; border: 1px solid #334155;
+    }
+    .login-logo { text-align: center; margin-bottom: 28px; }
+    .login-logo .l-icon { font-size: 40px; background: var(--blue); width: 64px; height: 64px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+    .login-logo .l-name { color: #fff; font-size: 22px; font-weight: 800; }
+    .login-logo .l-sub { color: #64748b; font-size: 13px; }
+    .login-form label { display: block; font-size: 12px; font-weight: 600; color: #94a3b8; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .login-form input {
+      width: 100%; padding: 10px 14px; background: #0f172a;
+      border: 1px solid #334155; border-radius: 8px; color: #fff;
+      font-size: 14px; outline: none; margin-bottom: 16px;
+    }
+    .login-form input:focus { border-color: var(--blue); }
+    .login-btn {
+      width: 100%; padding: 12px; background: var(--blue); color: #fff;
+      border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
+      cursor: pointer; margin-top: 4px; transition: opacity 0.15s;
+    }
+    .login-btn:hover { opacity: 0.88; }
+    .login-hint { color: #475569; font-size: 12px; text-align: center; margin-top: 20px; }
+    .quick-users { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
+    .quick-user {
+      padding: 10px 12px; border-radius: 8px; border: 1px solid #334155;
+      cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+    }
+    .quick-user:hover { border-color: var(--blue); background: #1e3a5f; }
+    .quick-user .qu-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .quick-user .qu-name { font-size: 12px; font-weight: 600; color: #e2e8f0; }
+    .quick-user .qu-role { font-size: 10px; color: #64748b; }
+
+    /* ACCESS DENIED */
+    .access-denied {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; height: 60vh; gap: 12px;
+    }
+    .access-denied .lock { font-size: 56px; }
+    .access-denied h2 { font-size: 18px; font-weight: 700; color: var(--text); }
+    .access-denied p { font-size: 13px; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -414,18 +493,25 @@
 
   <div class="sidebar-section">
     <div class="sidebar-section-label">Sistema</div>
+    <div class="nav-item" id="nav-users" onclick="showPage('users', this)">
+      <span class="icon">👥</span> Usuarios
+    </div>
+    <div class="nav-item" id="nav-roles" onclick="showPage('roles', this)">
+      <span class="icon">🔐</span> Roles & Permisos
+    </div>
     <div class="nav-item" onclick="showPage('settings', this)">
       <span class="icon">⚙️</span> Configuración
     </div>
   </div>
 
   <div class="sidebar-footer">
-    <div class="user-info">
-      <div class="avatar">JR</div>
-      <div>
-        <div class="user-name">Juan Rodríguez</div>
-        <div class="user-role">Administrador</div>
+    <div class="user-info" style="cursor:pointer" onclick="doLogout()" title="Cerrar sesión">
+      <div class="avatar" id="sidebar-avatar">JR</div>
+      <div style="flex:1">
+        <div class="user-name" id="sidebar-username">Juan Rodríguez</div>
+        <div class="user-role" id="sidebar-userrole">Administrador</div>
       </div>
+      <span style="color:#475569;font-size:16px" title="Cerrar sesión">⏻</span>
     </div>
   </div>
 </aside>
@@ -917,15 +1003,306 @@
       </div>
     </div>
 
+    <!-- ===================== USUARIOS ===================== -->
+    <div class="page" id="page-users">
+      <div class="inv-toolbar">
+        <div class="inv-search">
+          <span>🔍</span>
+          <input type="text" placeholder="Buscar usuario por nombre o correo..."/>
+        </div>
+        <div class="filter-btn">🔐 Rol ▾</div>
+        <div class="filter-btn">🟢 Estado ▾</div>
+        <button class="topbar-btn" onclick="openUserModal()">+ Nuevo Usuario</button>
+      </div>
+
+      <div class="kpi-grid" style="margin-bottom:20px">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Usuarios</div>
+          <div class="kpi-value">8</div>
+          <div class="kpi-sub" style="color:var(--text-muted)">Cuentas creadas</div>
+          <div class="kpi-icon blue">👥</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Activos Hoy</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-sub up">En sesión ahora</div>
+          <div class="kpi-icon green">🟢</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Roles Definidos</div>
+          <div class="kpi-value">5</div>
+          <div class="kpi-sub" style="color:var(--text-muted)">Con permisos configurados</div>
+          <div class="kpi-icon purple">🔐</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Último Acceso</div>
+          <div class="kpi-value" style="font-size:16px">Hace 2 min</div>
+          <div class="kpi-sub" style="color:var(--text-muted)">María C. · Cajero</div>
+          <div class="kpi-icon orange">🕐</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Usuarios del Sistema</div>
+          <div class="card-link" onclick="showPage('roles', document.getElementById('nav-roles'))">Ver Roles & Permisos →</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Usuario</th><th>Correo</th><th>Rol</th><th>Último Acceso</th><th>Estado</th><th>Acciones</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:var(--purple)">JR</div><div><strong>Juan Rodríguez</strong><div style="font-size:11px;color:var(--text-muted)">Administrador principal</div></div></div></td>
+                <td>juan@drogueria.com</td>
+                <td><span class="badge purple">Administrador</span></td>
+                <td>Ahora</td>
+                <td><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+                <td><span class="card-link">Editar</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:var(--blue)">MC</div><div><strong>María Castro</strong><div style="font-size:11px;color:var(--text-muted)">Caja 1</div></div></div></td>
+                <td>maria@drogueria.com</td>
+                <td><span class="badge blue">Cajero</span></td>
+                <td>Hace 2 min</td>
+                <td><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+                <td><span class="card-link">Editar</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:var(--blue)">LP</div><div><strong>Luis Pérez</strong><div style="font-size:11px;color:var(--text-muted)">Caja 2</div></div></div></td>
+                <td>luis@drogueria.com</td>
+                <td><span class="badge blue">Cajero</span></td>
+                <td>Hace 1 hora</td>
+                <td><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+                <td><span class="card-link">Editar</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:var(--orange)">CT</div><div><strong>Carlos Torres</strong><div style="font-size:11px;color:var(--text-muted)">Bodega principal</div></div></div></td>
+                <td>carlos@drogueria.com</td>
+                <td><span class="badge orange">Bodeguero</span></td>
+                <td>Hace 30 min</td>
+                <td><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+                <td><span class="card-link">Editar</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:var(--green)">AG</div><div><strong>Ana Gómez</strong><div style="font-size:11px;color:var(--text-muted)">Farmacéutica jefe</div></div></div></td>
+                <td>ana@drogueria.com</td>
+                <td><span class="badge green">Farmacéutico</span></td>
+                <td>Ayer 4:30pm</td>
+                <td><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+                <td><span class="card-link">Editar</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:var(--yellow)">RM</div><div><strong>Rosa Medina</strong><div style="font-size:11px;color:var(--text-muted)">Contabilidad</div></div></div></td>
+                <td>rosa@drogueria.com</td>
+                <td><span class="badge" style="background:#fef9c3;color:#854d0e">Contador</span></td>
+                <td>Hace 3 días</td>
+                <td><label class="toggle"><input type="checkbox" checked/><span class="toggle-slider"></span></label></td>
+                <td><span class="card-link">Editar</span></td>
+              </tr>
+              <tr>
+                <td><div style="display:flex;align-items:center;gap:10px"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:#94a3b8">PV</div><div><strong>Pedro Vargas</strong><div style="font-size:11px;color:var(--text-muted)">Inactivo</div></div></div></td>
+                <td>pedro@drogueria.com</td>
+                <td><span class="badge blue">Cajero</span></td>
+                <td>Hace 15 días</td>
+                <td><label class="toggle"><input type="checkbox"/><span class="toggle-slider"></span></label></td>
+                <td><span class="card-link">Editar</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding:14px 18px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;font-size:13px;color:#1d4ed8">
+        💡 <strong>Tip:</strong> Puedes simular el acceso de cada rol haciendo clic en <strong>"Simular vista"</strong> al editar un usuario, o usando el selector de usuario en la pantalla de login (botón ⏻ abajo a la izquierda).
+      </div>
+    </div>
+
+    <!-- ===================== ROLES & PERMISOS ===================== -->
+    <div class="page" id="page-roles">
+      <div style="margin-bottom:20px">
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Roles del Sistema</div></div>
+            <div class="card-body" style="padding:12px 20px">
+              <div class="alert-item">
+                <div style="width:12px;height:12px;border-radius:50%;background:var(--purple);flex-shrink:0"></div>
+                <div class="alert-text"><strong>Administrador</strong><span>Acceso total al sistema sin restricciones</span></div>
+                <span class="badge purple">1 usuario</span>
+              </div>
+              <div class="alert-item">
+                <div style="width:12px;height:12px;border-radius:50%;background:var(--blue);flex-shrink:0"></div>
+                <div class="alert-text"><strong>Cajero</strong><span>POS, ventas, clientes y facturas de venta</span></div>
+                <span class="badge blue">3 usuarios</span>
+              </div>
+              <div class="alert-item">
+                <div style="width:12px;height:12px;border-radius:50%;background:var(--orange);flex-shrink:0"></div>
+                <div class="alert-text"><strong>Bodeguero</strong><span>Inventario, productos, compras y proveedores</span></div>
+                <span class="badge orange">1 usuario</span>
+              </div>
+              <div class="alert-item">
+                <div style="width:12px;height:12px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+                <div class="alert-text"><strong>Farmacéutico</strong><span>Recetas, productos e inventario (solo lectura)</span></div>
+                <span class="badge green">1 usuario</span>
+              </div>
+              <div class="alert-item" style="border:none">
+                <div style="width:12px;height:12px;border-radius:50%;background:var(--yellow);flex-shrink:0"></div>
+                <div class="alert-text"><strong>Contador</strong><span>Reportes, facturas y ventas (solo lectura)</span></div>
+                <span class="badge" style="background:#fef9c3;color:#854d0e">1 usuario</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">Simular Vista por Rol</div></div>
+            <div class="card-body">
+              <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Selecciona un rol para ver exactamente qué módulos y opciones están disponibles para ese perfil.</p>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button onclick="simulateRole('admin')" style="padding:9px 14px;border-radius:8px;border:1px solid #e9d5ff;background:#f3e8ff;color:#7e22ce;font-size:13px;font-weight:600;cursor:pointer;text-align:left">👑 Simular Administrador</button>
+                <button onclick="simulateRole('cajero')" style="padding:9px 14px;border-radius:8px;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;font-size:13px;font-weight:600;cursor:pointer;text-align:left">🛒 Simular Cajero</button>
+                <button onclick="simulateRole('bodeguero')" style="padding:9px 14px;border-radius:8px;border:1px solid #fed7aa;background:#fff7ed;color:#c2410c;font-size:13px;font-weight:600;cursor:pointer;text-align:left">📦 Simular Bodeguero</button>
+                <button onclick="simulateRole('farmaceutico')" style="padding:9px 14px;border-radius:8px;border:1px solid #bbf7d0;background:#f0fdf4;color:#15803d;font-size:13px;font-weight:600;cursor:pointer;text-align:left">💊 Simular Farmacéutico</button>
+                <button onclick="simulateRole('contador')" style="padding:9px 14px;border-radius:8px;border:1px solid #fef08a;background:#fefce8;color:#854d0e;font-size:13px;font-weight:600;cursor:pointer;text-align:left">📊 Simular Contador</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Matriz de Permisos por Módulo</div>
+            <div style="font-size:12px;color:var(--text-muted)">✅ Acceso total &nbsp; 👁️ Solo lectura &nbsp; ❌ Sin acceso</div>
+          </div>
+          <div class="table-wrap">
+            <table class="perm-matrix">
+              <thead>
+                <tr>
+                  <th class="module-col" style="width:200px">Módulo</th>
+                  <th><div class="role-header"><div class="role-dot admin"></div>Admin</div></th>
+                  <th><div class="role-header"><div class="role-dot cajero"></div>Cajero</div></th>
+                  <th><div class="role-header"><div class="role-dot bodeguero"></div>Bodeguero</div></th>
+                  <th><div class="role-header"><div class="role-dot farmaceutico"></div>Farmacéutico</div></th>
+                  <th><div class="role-header"><div class="role-dot contador"></div>Contador</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="module-name">📊 Dashboard</td><td>✅</td><td>👁️</td><td>👁️</td><td>👁️</td><td>👁️</td></tr>
+                <tr><td class="module-name">🛒 Punto de Venta</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td class="module-name">📦 Inventario</td><td>✅</td><td>❌</td><td>✅</td><td>👁️</td><td>❌</td></tr>
+                <tr><td class="module-name">💊 Productos</td><td>✅</td><td>👁️</td><td>✅</td><td>👁️</td><td>❌</td></tr>
+                <tr><td class="module-name">📋 Ventas</td><td>✅</td><td>👁️</td><td>❌</td><td>❌</td><td>👁️</td></tr>
+                <tr><td class="module-name">🧾 Facturación</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>👁️</td></tr>
+                <tr><td class="module-name">📄 Recetas</td><td>✅</td><td>👁️</td><td>❌</td><td>✅</td><td>❌</td></tr>
+                <tr><td class="module-name">🏭 Proveedores</td><td>✅</td><td>❌</td><td>✅</td><td>❌</td><td>👁️</td></tr>
+                <tr><td class="module-name">🚚 Órdenes de Compra</td><td>✅</td><td>❌</td><td>✅</td><td>❌</td><td>👁️</td></tr>
+                <tr><td class="module-name">👤 Clientes</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td class="module-name">💰 Caja</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>👁️</td></tr>
+                <tr><td class="module-name">📈 Reportes</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+                <tr><td class="module-name">👥 Usuarios</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td class="module-name">🔐 Roles & Permisos</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td class="module-name">⚙️ Configuración</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ===================== SETTINGS ===================== -->
     <div class="page" id="page-settings">
       <div style="text-align:center;padding:60px 20px;color:var(--text-muted)">
         <div style="font-size:48px;margin-bottom:12px">⚙️</div>
         <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px">Configuración del Sistema</div>
-        <div style="font-size:14px">Usuarios, roles, permisos, datos de la empresa y parámetros generales.</div>
+        <div style="font-size:14px">Datos de la empresa, impresoras, parámetros generales e integraciones.</div>
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="l-icon">💊</div>
+      <div class="l-name">FarmaSystem</div>
+      <div class="l-sub">Sistema de Gestión de Droguería</div>
+    </div>
+    <div class="login-form">
+      <label>Usuario</label>
+      <input type="text" id="login-user" placeholder="correo@drogueria.com"/>
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="••••••••"/>
+      <button class="login-btn" onclick="doLogin()">Iniciar Sesión</button>
+    </div>
+    <div class="login-hint">— o selecciona un perfil de prueba —</div>
+    <div class="quick-users">
+      <div class="quick-user" onclick="loginAs('admin')">
+        <div class="qu-avatar" style="background:var(--purple)">JR</div>
+        <div><div class="qu-name">Juan R.</div><div class="qu-role">👑 Administrador</div></div>
+      </div>
+      <div class="quick-user" onclick="loginAs('cajero')">
+        <div class="qu-avatar" style="background:var(--blue)">MC</div>
+        <div><div class="qu-name">María C.</div><div class="qu-role">🛒 Cajero</div></div>
+      </div>
+      <div class="quick-user" onclick="loginAs('bodeguero')">
+        <div class="qu-avatar" style="background:var(--orange)">CT</div>
+        <div><div class="qu-name">Carlos T.</div><div class="qu-role">📦 Bodeguero</div></div>
+      </div>
+      <div class="quick-user" onclick="loginAs('farmaceutico')">
+        <div class="qu-avatar" style="background:var(--green)">AG</div>
+        <div><div class="qu-name">Ana G.</div><div class="qu-role">💊 Farmacéutico</div></div>
+      </div>
+      <div class="quick-user" onclick="loginAs('contador')">
+        <div class="qu-avatar" style="background:var(--yellow)">RM</div>
+        <div><div class="qu-name">Rosa M.</div><div class="qu-role">📊 Contador</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO USUARIO -->
+<div class="modal-overlay" id="user-modal-overlay" onclick="closeUserModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>👤 Nuevo Usuario</h3>
+    <div class="form-grid-2">
+      <div class="form-row">
+        <label>Nombre Completo</label>
+        <input type="text" placeholder="María Castro"/>
+      </div>
+      <div class="form-row">
+        <label>Correo Electrónico</label>
+        <input type="email" placeholder="maria@drogueria.com"/>
+      </div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row">
+        <label>Rol</label>
+        <select>
+          <option>Administrador</option>
+          <option selected>Cajero</option>
+          <option>Bodeguero</option>
+          <option>Farmacéutico</option>
+          <option>Contador</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Contraseña Temporal</label>
+        <input type="password" placeholder="••••••••"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Descripción / Cargo</label>
+      <input type="text" placeholder="Ej: Caja 1, Bodega principal..."/>
+    </div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;font-size:12px;color:#15803d;margin-bottom:4px">
+      ✅ El usuario recibirá un correo para activar su cuenta y cambiar la contraseña.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeUserModal()">Cancelar</button>
+      <button class="btn-primary">Crear Usuario</button>
+    </div>
   </div>
 </div>
 
@@ -1028,34 +1405,204 @@
 
 <script>
   const pages = {
-    dashboard: { title: 'Dashboard', action: '+ Nueva Venta' },
-    pos: { title: 'Punto de Venta', action: '🖨️ Imprimir Último' },
-    inventory: { title: 'Inventario', action: '+ Agregar Producto' },
-    products: { title: 'Productos', action: '+ Nuevo Producto' },
-    sales: { title: 'Ventas', action: '📥 Exportar' },
-    invoices: { title: 'Facturación', action: '+ Nueva Factura' },
-    prescriptions: { title: 'Recetas Médicas', action: '+ Registrar Receta' },
-    suppliers: { title: 'Proveedores', action: '+ Nuevo Proveedor' },
-    purchases: { title: 'Órdenes de Compra', action: '+ Nueva Orden' },
-    customers: { title: 'Clientes', action: '+ Nuevo Cliente' },
-    cash: { title: 'Caja', action: '🔓 Abrir Caja' },
-    reports: { title: 'Reportes', action: '📥 Exportar PDF' },
-    settings: { title: 'Configuración', action: '💾 Guardar Cambios' },
+    dashboard:     { title: 'Dashboard',           action: '+ Nueva Venta' },
+    pos:           { title: 'Punto de Venta',       action: '🖨️ Imprimir Último' },
+    inventory:     { title: 'Inventario',           action: '+ Agregar Producto' },
+    products:      { title: 'Productos',            action: '+ Nuevo Producto' },
+    sales:         { title: 'Ventas',               action: '📥 Exportar' },
+    invoices:      { title: 'Facturación',          action: '+ Nueva Factura' },
+    prescriptions: { title: 'Recetas Médicas',      action: '+ Registrar Receta' },
+    suppliers:     { title: 'Proveedores',          action: '+ Nuevo Proveedor' },
+    purchases:     { title: 'Órdenes de Compra',    action: '+ Nueva Orden' },
+    customers:     { title: 'Clientes',             action: '+ Nuevo Cliente' },
+    cash:          { title: 'Caja',                 action: '🔓 Abrir Caja' },
+    reports:       { title: 'Reportes',             action: '📥 Exportar PDF' },
+    users:         { title: 'Usuarios',             action: '+ Nuevo Usuario' },
+    roles:         { title: 'Roles & Permisos',     action: '+ Nuevo Rol' },
+    settings:      { title: 'Configuración',        action: '💾 Guardar Cambios' },
   };
 
+  // Permisos: qué páginas puede ver cada rol
+  // 'full' = acceso total, 'read' = solo lectura, false = sin acceso
+  const rolePermissions = {
+    admin: {
+      dashboard: 'full', pos: 'full', inventory: 'full', products: 'full',
+      sales: 'full', invoices: 'full', prescriptions: 'full', suppliers: 'full',
+      purchases: 'full', customers: 'full', cash: 'full', reports: 'full',
+      users: 'full', roles: 'full', settings: 'full'
+    },
+    cajero: {
+      dashboard: 'read', pos: 'full', inventory: false, products: 'read',
+      sales: 'read', invoices: 'full', prescriptions: 'read', suppliers: false,
+      purchases: false, customers: 'full', cash: 'full', reports: false,
+      users: false, roles: false, settings: false
+    },
+    bodeguero: {
+      dashboard: 'read', pos: false, inventory: 'full', products: 'full',
+      sales: false, invoices: false, prescriptions: false, suppliers: 'full',
+      purchases: 'full', customers: false, cash: false, reports: false,
+      users: false, roles: false, settings: false
+    },
+    farmaceutico: {
+      dashboard: 'read', pos: false, inventory: 'read', products: 'read',
+      sales: false, invoices: false, prescriptions: 'full', suppliers: false,
+      purchases: false, customers: false, cash: false, reports: false,
+      users: false, roles: false, settings: false
+    },
+    contador: {
+      dashboard: 'read', pos: false, inventory: false, products: false,
+      sales: 'read', invoices: 'read', prescriptions: false, suppliers: 'read',
+      purchases: 'read', customers: false, cash: 'read', reports: 'full',
+      users: false, roles: false, settings: false
+    }
+  };
+
+  const roleProfiles = {
+    admin:        { name: 'Juan Rodríguez',  role: 'Administrador', initials: 'JR', color: 'var(--purple)' },
+    cajero:       { name: 'María Castro',    role: 'Cajero',        initials: 'MC', color: 'var(--blue)' },
+    bodeguero:    { name: 'Carlos Torres',   role: 'Bodeguero',     initials: 'CT', color: 'var(--orange)' },
+    farmaceutico: { name: 'Ana Gómez',       role: 'Farmacéutico',  initials: 'AG', color: 'var(--green)' },
+    contador:     { name: 'Rosa Medina',     role: 'Contador',      initials: 'RM', color: 'var(--yellow)' },
+  };
+
+  // Nav items y sus páginas correspondientes
+  const navItems = [
+    { sel: '[onclick*="dashboard"]',    page: 'dashboard' },
+    { sel: '[onclick*="\'pos\'"]',      page: 'pos' },
+    { sel: '[onclick*="inventory"]',    page: 'inventory' },
+    { sel: '[onclick*="\'products\'"]', page: 'products' },
+    { sel: '[onclick*="\'sales\'"]',    page: 'sales' },
+    { sel: '[onclick*="invoices"]',     page: 'invoices' },
+    { sel: '[onclick*="prescriptions"]',page: 'prescriptions' },
+    { sel: '[onclick*="suppliers"]',    page: 'suppliers' },
+    { sel: '[onclick*="purchases"]',    page: 'purchases' },
+    { sel: '[onclick*="customers"]',    page: 'customers' },
+    { sel: '[onclick*="\'cash\'"]',     page: 'cash' },
+    { sel: '[onclick*="reports"]',      page: 'reports' },
+    { sel: '[onclick*="\'users\'"]',    page: 'users' },
+    { sel: '[onclick*="\'roles\'"]',    page: 'roles' },
+    { sel: '[onclick*="settings"]',     page: 'settings' },
+  ];
+
+  let currentRole = 'admin';
+
+  function applyRoleToSidebar(role) {
+    const perms = rolePermissions[role];
+    navItems.forEach(({ sel, page }) => {
+      const el = document.querySelector('.sidebar ' + sel);
+      if (!el) return;
+      if (perms[page]) {
+        el.style.display = '';
+        el.style.opacity = perms[page] === 'read' ? '0.6' : '1';
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  }
+
+  function updateSidebarUser(role) {
+    const p = roleProfiles[role];
+    document.getElementById('sidebar-avatar').textContent = p.initials;
+    document.getElementById('sidebar-avatar').style.background = p.color;
+    document.getElementById('sidebar-username').textContent = p.name;
+    document.getElementById('sidebar-userrole').textContent = p.role;
+  }
+
   function showPage(name, el) {
+    const perms = rolePermissions[currentRole];
+    if (!perms[name]) {
+      // Mostrar acceso denegado en lugar de la página
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      el && el.classList.add('active');
+      document.getElementById('topbar-title').textContent = pages[name]?.title || name;
+      document.getElementById('topbar-action').textContent = '';
+      // Inyectar pantalla de denegado
+      let denied = document.getElementById('page-denied');
+      if (!denied) {
+        denied = document.createElement('div');
+        denied.id = 'page-denied';
+        denied.className = 'page';
+        document.querySelector('.content').appendChild(denied);
+      }
+      denied.innerHTML = `<div class="access-denied">
+        <div class="lock">🔒</div>
+        <h2>Acceso Restringido</h2>
+        <p>Tu rol (<strong>${roleProfiles[currentRole].role}</strong>) no tiene permiso para acceder a este módulo.</p>
+        <p style="margin-top:4px">Contacta al administrador si necesitas acceso.</p>
+      </div>`;
+      denied.classList.add('active');
+      return;
+    }
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
-    el.classList.add('active');
+    el && el.classList.add('active');
     document.getElementById('topbar-title').textContent = pages[name].title;
-    document.getElementById('topbar-action').textContent = pages[name].action;
+    const action = perms[name] === 'read' ? '👁️ Solo Lectura' : pages[name].action;
+    document.getElementById('topbar-action').textContent = action;
   }
+
+  function simulateRole(role) {
+    currentRole = role;
+    applyRoleToSidebar(role);
+    updateSidebarUser(role);
+    // Navegar al primer módulo permitido del rol
+    const perms = rolePermissions[role];
+    const first = Object.keys(perms).find(p => perms[p]);
+    const navEl = document.querySelector(`.sidebar [onclick*="'${first}'"]`) ||
+                  document.querySelector(`.sidebar [onclick*="${first}"]`);
+    showPage(first, navEl);
+
+    // Mostrar banner de simulación
+    let banner = document.getElementById('role-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'role-banner';
+      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:150;padding:8px 20px;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between';
+      document.body.appendChild(banner);
+    }
+    const colors = { admin:'#7e22ce', cajero:'#1d4ed8', bodeguero:'#c2410c', farmaceutico:'#15803d', contador:'#854d0e' };
+    const bgs = { admin:'#f3e8ff', cajero:'#eff6ff', bodeguero:'#fff7ed', farmaceutico:'#f0fdf4', contador:'#fefce8' };
+    banner.style.background = bgs[role];
+    banner.style.color = colors[role];
+    banner.style.borderBottom = `2px solid ${colors[role]}40`;
+    banner.innerHTML = `🎭 Simulando vista de: <strong>${roleProfiles[role].role} — ${roleProfiles[role].name}</strong> &nbsp;|&nbsp; Los módulos sin acceso están ocultos &nbsp;<button onclick="simulateRole('admin')" style="padding:3px 10px;border-radius:6px;border:1px solid ${colors[role]};background:transparent;color:${colors[role]};font-size:12px;font-weight:700;cursor:pointer">✕ Volver a Admin</button>`;
+    banner.style.display = 'flex';
+    if (role === 'admin') banner.style.display = 'none';
+  }
+
+  function loginAs(role) {
+    currentRole = role;
+    document.getElementById('login-overlay').classList.add('hidden');
+    applyRoleToSidebar(role);
+    updateSidebarUser(role);
+    simulateRole(role);
+  }
+
+  function doLogin() {
+    loginAs('admin');
+  }
+
+  function doLogout() {
+    document.getElementById('login-overlay').classList.remove('hidden');
+    const banner = document.getElementById('role-banner');
+    if (banner) banner.style.display = 'none';
+  }
+
+  // Inicializar como admin (ya logueado en la maqueta)
+  applyRoleToSidebar('admin');
+  updateSidebarUser('admin');
 
   function openModal() { document.getElementById('modal-overlay').classList.add('open'); }
   function closeModal(e) {
     if (!e || e.target === document.getElementById('modal-overlay'))
       document.getElementById('modal-overlay').classList.remove('open');
+  }
+  function openUserModal() { document.getElementById('user-modal-overlay').classList.add('open'); }
+  function closeUserModal(e) {
+    if (!e || e.target === document.getElementById('user-modal-overlay'))
+      document.getElementById('user-modal-overlay').classList.remove('open');
   }
 
   // CART
